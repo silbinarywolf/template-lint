@@ -10,7 +10,7 @@ import * as ts from "typescript";
 import * as Path from "path";
 
 import { Rule, Parser, ParserState, Issue, IssueSeverity } from "template-lint";
-import { Reflection } from "../reflection";
+import { Reflection } from "source/reflection";
 import { AureliaReflection } from '../aurelia-reflection';
 
 import {
@@ -433,8 +433,8 @@ export class BindingRule extends ASTBuilder {
             x.kind == ts.SyntaxKind.MethodDeclaration ||
             x.kind == ts.SyntaxKind.GetAccessor)
           .sort((a, b) => {
-            let sa = (a.flags & ts.NodeFlags.Static);
-            let sb = (b.flags & ts.NodeFlags.Static);
+            let sa = (a.flags & ts.ModifierFlags.Static);
+            let sb = (b.flags & ts.ModifierFlags.Static);
             return sa - sb;
           })
           .find(x => (<any>x.name).text == memberName);
@@ -488,8 +488,8 @@ export class BindingRule extends ASTBuilder {
       return null;
 
     if (this.restrictedAccess.length > 0) {
-      const isPrivate = member.flags & ts.NodeFlags.Private;
-      const isProtected = member.flags & ts.NodeFlags.Protected;
+      const isPrivate = member.flags & ts.ModifierFlags.Private;
+      const isProtected = member.flags & ts.ModifierFlags.Protected;
 
       const restrictPrivate = this.restrictedAccess.indexOf("private") != -1;
       const restrictProtected = this.restrictedAccess.indexOf("protected") != -1;
@@ -577,7 +577,7 @@ export class BindingRule extends ASTBuilder {
 
         if (typeDecl != null) {
           let baseMembers = this.resolveClassMembers(<ts.ClassDeclaration>typeDecl);
-          members = <ts.NodeArray<ts.ClassElement>>members.concat(baseMembers);
+          members = members.concat(baseMembers) as any as ts.NodeArray<ts.ClassElement>;
         }
       }
     }
@@ -597,7 +597,7 @@ export class BindingRule extends ASTBuilder {
 
         if (typeDecl != null) {
           let baseMembers = this.resolveInterfaceMembers(<ts.InterfaceDeclaration>typeDecl);
-          members = <ts.NodeArray<ts.TypeElement>>members.concat(baseMembers);
+          members = members.concat(baseMembers) as any as ts.NodeArray<ts.TypeElement>;
         }
       }
     }
@@ -650,7 +650,8 @@ export class BindingRule extends ASTBuilder {
   }
 
   private reportUnresolvedAccessMemberIssue(member: string, decl: ts.Declaration, loc: FileLoc) {
-    let msg = `cannot find '${member}' in type '${decl.name.getText()}'`;
+    const nameText = decl.getText(); // decl.name.getText()
+    let msg = `cannot find '${member}' in type '${nameText}'`;
     let issue = new Issue({
       message: msg,
       line: loc.line,
@@ -662,7 +663,8 @@ export class BindingRule extends ASTBuilder {
   }
 
   private reportPrivateAccessMemberIssue(member: string, decl: ts.Declaration, loc: FileLoc, accessModifier: string) {
-    let msg = `field '${member}' in type '${decl.name.getText()}' has ${accessModifier} access modifier`;
+    const nameText = decl.getText(); // decl.name.getText()
+    let msg = `field '${member}' in type '${nameText}' has ${accessModifier} access modifier`;
     let issue = new Issue({
       message: msg,
       line: loc.line,

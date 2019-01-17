@@ -2,9 +2,15 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "baseUrl": ".",
     "sourceMap": true,
     "noEmitOnError": true,
     "newLine": "LF",
-    "declaration": true
-  }
+    "skipLibCheck": true,
+    "declaration": true,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

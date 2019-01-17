@@ -1,12 +1,12 @@
 "use strict";
 
-export * from "./rules/template"
-export * from "./rules/require"
-export * from "./rules/slot"
-export * from "./rules/binding";
-export * from "./rules/required-attr";
+export * from "source/rules/template"
+export * from "source/rules/require"
+export * from "source/rules/slot"
+export * from "source/rules/binding";
+export * from "source/rules/required-attr";
 
-export * from "./ast"
-export * from "./aurelia-linter"
-export * from "./config"
-export * from "./reflection";
+export * from "source/ast"
+export * from "source/aurelia-linter"
+export * from "source/config"
+export * from "source/reflection";

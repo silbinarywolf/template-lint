@@ -28,7 +28,11 @@ gulp.task('clean:typescript', function () {
 });
 
 gulp.task('clean:tests', function () {
-  return gulp.src([paths.spec + '**/*.spec.js', paths.spec + '**/*.map'], { read: false })
+  const tsProject = ts.createProject('tsconfig.json', {
+    typescript: require('typescript')
+  });
+  return tsProject.src()
+    .pipe(tsProject())
     .pipe(rimraf());
 });
 
@@ -36,13 +40,12 @@ gulp.task('clean', ['clean:tests', 'clean:typescript'], function () {
 });
 
 gulp.task('compile:typescript', ['clean:typescript'], function () {
-  var project = ts.createProject('tsconfig.json', {
+  const tsProject = ts.createProject('tsconfig.json', {
     typescript: require('typescript')
   });
-
-  var tsResult =  gulp.src([paths.source + '**/*.ts', "node_modules/@types/**/index.d.ts", "!node_modules/@types/**/node_modules/**/index.d.ts"])
+  var tsResult = tsProject.src()
     .pipe(sourcemap.init())
-    .pipe(ts(project));
+    .pipe(tsProject());
 
   return merge([
     tsResult.dts.pipe(gulp.dest(paths.output)),
@@ -109,13 +112,13 @@ gulp.task('format:tests', function () {
 gulp.task('format', ['format:sources', 'format:tests'], function () { });
 
 gulp.task('compile:tests', ['compile:typescript', 'clean:tests'], function () {
-  var project = ts.createProject('tsconfig.json', {
+  const tsProject = ts.createProject('tsconfig.json', {
     typescript: require('typescript')
   });
-
-  var tsResult = gulp.src([paths.spec + '**/*spec.ts', "node_modules/@types/**/index.d.ts", "!node_modules/@types/**/node_modules/**/index.d.ts"])
+  
+  var tsResult = gulp.src(paths.spec + '**/*spec.ts')
     .pipe(sourcemap.init())
-    .pipe(ts(project));
+    .pipe(tsProject());
 
   return tsResult.js
     .pipe(sourcemap.write('.', {

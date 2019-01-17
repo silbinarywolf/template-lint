@@ -11,15 +11,15 @@ import { ValidChildRule } from 'template-lint';
 import { ConflictingAttributesRule, ConflictingAttributes } from 'template-lint';
 
 
-import { RequireRule } from './rules/require';
-import { SlotRule } from './rules/slot';
-import { TemplateRule } from './rules/template';
-import { BindingRule } from './rules/binding';
-import { RequiredAttributeRule } from './rules/required-attr';
+import { RequireRule } from 'source/rules/require';
+import { SlotRule } from 'source/rules/slot';
+import { TemplateRule } from 'source/rules/template';
+import { BindingRule } from 'source/rules/binding';
+import { RequiredAttributeRule } from 'source/rules/required-attr';
 
-import { Reflection } from './reflection';
-import { AureliaReflection } from './aurelia-reflection';
-import { Config } from './config';
+import { Reflection } from 'source/reflection';
+import { AureliaReflection } from 'source/aurelia-reflection';
+import { Config } from 'source/config';
 
 import { initialize } from 'aurelia-pal-nodejs';
 
